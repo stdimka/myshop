@@ -43,10 +43,10 @@ class TestUserProfile:
 
     def test_get_unpaid_orders_returns_only_pending_orders(self, user, make_order):
         """Метод get_unpaid_orders возвращает только заказы с статусом pending и правильную сумму."""
-        pending_order = make_order(user=user, status="pending", total_price=50)
-        _ = make_order(user=user, status="paid", total_price=30)
+        pending_order = make_order(user=user, status="pending", item_price=50)
+        _ = make_order(user=user, status="paid", item_price=30)  # ← заменил total_price → item_price
 
-        result = user.userprofile.get_unpaid_orders()  # Убрали (user)
+        result = user.userprofile.get_unpaid_orders()
         orders = result["orders"]
         total = result["total"]
 

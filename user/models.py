@@ -21,14 +21,34 @@ class UserProfile(models.Model):
 
     def get_balance(self):
         """Возвращает текущий баланс пользователя."""
+        return self.balance
 
     def get_cart(self):
-        """Возвращает текущую корзину пользователя или создает новую."""
+        """Возвращает актуальную корзину или создаёт новую."""
+        from shop.models import Order
+        now = timezone.now()
+        expiration_time = now - timedelta(days=self.CART_EXPIRATION_DAYS)
 
+        # удаляем устаревшие корзины
+        Order.objects.filter(user=self.user, status="cart", updated_at__lt=expiration_time).delete()
+
+        # ищем актуальную
+        cart = Order.objects.filter(user=self.user, status="cart").order_by("-updated_at").first()
+        if cart:
+            return cart
+
+        # создаём новую
+        return Order.objects.create(user=self.user, status="cart")
 
     def get_unpaid_orders(self):
-        """Возвращает все заказы со статусом pending и общую сумму."""
+        """Возвращает все заказы pending и общую сумму."""
+        from shop.models import Order
+        pending_orders = Order.objects.filter(user=self.user, status="pending")
+        total = sum(order.total_price for order in pending_orders)
+        return {"orders": list(pending_orders), "total": total}
 
+    def __str__(self):
+        return f"Profile of {self.user.username}"
 
 
 # ------------------------------
@@ -49,24 +69,43 @@ class UserToken(models.Model):
 
     def is_valid(self):
         """Проверка валидности токена."""
+        return not self.revoked and self.expires_at > timezone.now()
 
     def revoke(self):
         """Отозвать токен."""
+        self.revoked = True
+        self.save(update_fields=["revoked"])
 
     @classmethod
     def cleanup_expired(cls):
         """Удаление всех истекших токенов."""
-
+        cls.objects.filter(expires_at__lt=timezone.now()).delete()
 
     @classmethod
     def generate(cls, user, token_type="refresh", expires_in_minutes=60):
         """Создает новый токен."""
+        token_value = uuid.uuid4().hex
+        expires = timezone.now() + timedelta(minutes=expires_in_minutes)
+        return cls.objects.create(
+            user=user,
+            token=token_value,
+            token_type=token_type,
+            expires_at=expires
+        )
+
+    def __str__(self):
+        return f"{self.user.username} - {self.token_type}"
 
 
-
+# ------------------------------
+# Signals
+# ------------------------------
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    """Signal: создать профиль при создании пользователя"""
+    """Signal: создать профиль при создании пользователя."""
+    if created:
+        UserProfile.objects.create(user=instance)
+
 
 @receiver(post_save, sender=UserProfile)
 def auto_process_pending_orders(sender, instance, created, **kwargs):
@@ -74,4 +113,6 @@ def auto_process_pending_orders(sender, instance, created, **kwargs):
     После сохранения UserProfile, если баланс > 0,
     запускаем process_auto для пользователя.
     """
-
+    if not created and instance.balance > 0:
+        from shop.models import Payment
+        Payment.process_auto(instance.user)

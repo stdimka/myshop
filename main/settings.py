@@ -78,26 +78,25 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# загрузка .env из корня проекта
-load_dotenv()
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DJANGO_DB_NAME", "jr_project_db"),
-        "USER": os.getenv("DJANGO_DB_USER", "user"),
-        "PASSWORD": os.getenv("DJANGO_DB_PASSWORD", "password"),
-        "HOST": os.getenv("DJANGO_DB_HOST", "localhost"),
-        "PORT": os.getenv("DJANGO_DB_PORT", "5432"),
+if os.getenv("GITHUB_ACTIONS") == "true" or os.getenv("USE_SQLITE_FOR_TESTS", "1") == "1":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DJANGO_DB_NAME", "jr_project_db"),
+            "USER": os.getenv("DJANGO_DB_USER", "user"),
+            "PASSWORD": os.getenv("DJANGO_DB_PASSWORD", "password"),
+            "HOST": os.getenv("DJANGO_DB_HOST", "localhost"),
+            "PORT": os.getenv("DJANGO_DB_PORT", "5432"),
+        }
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

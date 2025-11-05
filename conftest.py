@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
-from shop.models import Product, Order, OrderItem, Review, Payment
+from shop.models import Product, Order, OrderItem, Review, Payment, Category
 from user.models import UserToken, UserProfile
 
 
@@ -16,18 +16,16 @@ from user.models import UserToken, UserProfile
 def user(db):
     """Создает обычного пользователя с профилем и нулевым балансом."""
     user = User.objects.create_user(username="testuser", password="pass123")
-    # UserProfile создается автоматически через сигнал post_save
-    profile = user.userprofile
-    profile.balance = Decimal("0.0")
-    profile.save()
+    # UserProfile создаётся автоматически через сигнал post_save
+    # balance по умолчанию = 0.0 (уже в модели или сигнале)
     return user
 
 
 @pytest.fixture
 def user_with_balance(user):
-    """Пользователь с ненулевым балансом."""
+    """Пользователь с ненулевым балансом (на основе фикстуры user)."""
     profile = user.userprofile
-    profile.balance = Decimal('200.00')
+    profile.balance = Decimal('300.00')
     profile.save()
     return user
 
@@ -50,17 +48,28 @@ def token_factory(db):
 # ------------------------------
 # SHOP
 # ------------------------------
+@pytest.fixture(autouse=True)
+def create_default_category(db):
+    """Создаёт категорию 'General' один раз для всех тестов."""
+    from shop.models import Category
+    Category.objects.get_or_create(
+        slug="general",
+        defaults={"name": "General"}
+    )
+
 
 @pytest.fixture
 def product_factory(db):
-    """Фабрика продуктов с настраиваемыми параметрами."""
+    from shop.models import Category
     def create_product(**kwargs):
+        # Получаем или создаём категорию
+        category = Category.objects.get(slug="general")
         defaults = {
             "name": "Test Product",
             "description": "Описание продукта",
             "price": Decimal("100.0"),
             "unit": "шт",
-            "category_id": 1,
+            "category": category,  # ← обязательно!
             "image": "",
             "specs": {"color": "red", "weight": "1kg"},
             "is_active": True,
@@ -79,51 +88,48 @@ def product(product_factory):
 
 @pytest.fixture
 def product_in_stock():
-    """Простой товар с остатком на складе"""
+    from shop.models import Category
+    category = Category.objects.get(slug="general")
     return Product.objects.create(
         name="Тестовый товар",
         price=Decimal("100.0"),
         stock=10,
         unit="шт",
-        specs={"color": "red"}
+        specs={"color": "red"},
+        category=category  # ← добавлено
     )
 
 
 @pytest.fixture
 def make_order(db, product_factory):
     """Фабрика заказов с позициями."""
-    def create_order(user, status="cart", total_price=Decimal("0"), items_count=1):
+    def create_order(user, status="cart", items_count=1, item_price=None):
         order = Order.objects.create(user=user, status=status)
         for _ in range(items_count):
-            product = product_factory()
+            price = Decimal(item_price) if item_price is not None else Decimal("100.00")
+            product = product_factory(price=price)
             OrderItem.objects.create(
                 order=order,
                 product=product,
                 quantity=1,
-                price=product.price
+                price=price
             )
-        # Пересчет total_price
-        if total_price is not None:
-            order.total_price = Decimal(total_price)
-            order.save()
-        else:
-            # Автопересчет суммы из OrderItem
-            order.recalculate_total()
+        order.recalculate_total()
         return order
     return create_order
 
 
 @pytest.fixture
 def pending_order(make_order, user):
-    """Заказ со статусом pending."""
+    """Заказ со статусом pending (но без оплаты)."""
     return make_order(user=user, status="pending")
 
 
 @pytest.fixture
 def paid_order(make_order, user_with_balance):
-    """Оплаченный заказ для проверки инвойса и списания баланса."""
-    order = make_order(user=user_with_balance, status="pending")
-    Payment.process(order)  # предполагается, что метод списывает баланс и ставит статус paid
+    """Оплаченный заказ."""
+    order = make_order(user=user_with_balance, status="cart")  # сначала корзина
+    order.to_pending()  # → pending → оплата → paid
     order.refresh_from_db()
     return order
 
