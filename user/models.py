@@ -100,19 +100,26 @@ class UserToken(models.Model):
 # ------------------------------
 # Signals
 # ------------------------------
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    """Signal: создать профиль при создании пользователя."""
-    if created:
-        UserProfile.objects.create(user=instance)
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
+
+
+@receiver(pre_save, sender=UserProfile)
+def detect_balance_increase(sender, instance, **kwargs):
+    if not instance.pk:
+        return  # новый профиль — пропускаем
+
+    try:
+        old = UserProfile.objects.get(pk=instance.pk)
+    except UserProfile.DoesNotExist:
+        return
+
+    instance._balance_increased = instance.balance > old.balance
 
 
 @receiver(post_save, sender=UserProfile)
-def auto_process_pending_orders(sender, instance, created, **kwargs):
-    """
-    После сохранения UserProfile, если баланс > 0,
-    запускаем process_auto для пользователя.
-    """
-    if not created and instance.balance > 0:
+def auto_process_pending_orders(sender, instance, **kwargs):
+    if getattr(instance, "_balance_increased", False):
         from shop.models import Payment
         Payment.process_auto(instance.user)
+

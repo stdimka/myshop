@@ -16,8 +16,12 @@ from user.models import UserToken, UserProfile
 def user(db):
     """Создает обычного пользователя с профилем и нулевым балансом."""
     user = User.objects.create_user(username="testuser", password="pass123")
-    # UserProfile создаётся автоматически через сигнал post_save
-    # balance по умолчанию = 0.0 (уже в модели или сигнале)
+    # UserProfile создается автоматически через сигнал post_save
+    # Если сигнал не работает — создаём принудительно:
+    from user.models import UserProfile
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+    profile.balance = Decimal("0.0")
+    profile.save()
     return user
 
 
