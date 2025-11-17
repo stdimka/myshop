@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} | Hop & Barley</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="header-container">
+        <a href="{% url 'home' %}" class="header__logo">
+            <img src="{% static 'img/logo.svg' %}" alt="Hop & Barley Logo">
+            <p class="logo-text">Hop & Barley</p>
+        </a>
+        <nav class="header__nav">
+            <ul>
+                <li><a href="{% url 'home' %}">Products</a></li>
+                <li><a href="guides-recipes.html">Guides & Recipes</a></li>
+                <li><a href="#">Community</a></li>
+                <li><a href="#">Resources</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+
+        <!-- Block for unauthorized user -->
+        <div class="header__auth-buttons" id="auth-guest">
+            <a href="{% url 'user:login' %}" class="button button--secondary">Sign in</a>
+            <a href="{% url 'user:register' %}" class="button button--primary">Register</a>
+        </div>
+
+        <!-- Block for authorized user -->
+        <div class="header__user-actions" id="auth-user">
+            <a href="{% url 'user:profile' %}" class="user-icon" aria-label="My Account">
+                <img src="{% static 'img/icons/User_alt.svg' %}" alt="User Account">
+            </a>
+            <a href="{% url 'shop:cart' %}" class="cart-icon" aria-label="Shopping Cart">
+                <img src="{% static 'img/icons/Shopping_bag.svg' %}" alt="Shopping Cart">
+            </a>
+
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="page-product">
+    <div class="container">
+        <!-- Product Info Section -->
+        <section class="product-details-section">
+            <div class="product-image-container">
+                <!-- Используем изображение товара -->
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                    <img src="{% static 'img/products/default.jpg' %}" alt="No image" class="product-image">
+                {% endif %}
+            </div>
+            <div class="product-info-column">
+                <div class="product-title-price">
+                    <h1 class="product-name">{{ product.name }}</h1>
+                    <div class="price-section">
+                        <span class="price-tag">per 100g</span>
+                        <p class="product-price">${{ product.price }}</p>
+                    </div>
+                </div>
+                <div class="product-description">
+                    <p>{{ product.description }}</p>
+                </div>
+                <div class="cart-controls">
+                    <button class="button button--primary add-to-cart-button" id="add-to-cart-btn">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                    <div class="quantity-counter is-hidden" id="quantity-counter">
+                        <button class="quantity-btn" data-action="decrease" aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
+                        <span class="quantity-value">1 in cart</span>
+                        <button class="quantity-btn" data-action="increase" aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Specifications Accordion -->
+        <section class="accordion-section">
+            <div class="accordion-item">
+                <div class="accordion-title">
+                    <h3>Technical Specifications</h3>
+                    <i class="fa-solid fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <ul>
+                        <li><strong>Origin:</strong> USA</li>
+                        <li><strong>Type:</strong> Aroma (Dual-Purpose)</li>
+                        <li><strong>Alpha Acids:</strong> 4.5% - 7.0%</li>
+                        <li><strong>Beta Acids:</strong> 4.5% - 7.0%</li>
+                        <li><strong>Aroma Profile:</strong> Medium-intensity floral, citrus (grapefruit), and spicy notes.</li>
+                        <li><strong>Cohumulone:</strong> 33% - 40%</li>
+                        <li><strong>Total Oil:</strong> 0.8 - 1.5 mL/100g</li>
+                        <li><strong>Recommended Beer Styles:</strong> American Pale Ale, IPA, Porter, Barleywine, Witbier</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Reviews Section -->
+        <section class="reviews-section">
+            <h2 class="reviews-title">Latest reviews</h2>
+            <div class="reviews-grid">
+                <!-- Пример отзыва -->
+                {% for review in product.reviews.all %}
+                <div class="review-card">
+                    <div class="review-rating">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fa-solid fa-star"></i>
+                            {% else %}
+                                <i class="fa-regular fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="review-body">
+                        <h4 class="review-heading">{{ review.comment|truncatewords:4|title }}</h4>
+                        <p class="review-text">{{ review.comment }}</p>
+                    </div>
+                    <div class="review-author">
+                        <img src="{% static 'img/avatars/avatar_default.svg' %}" alt="User avatar" class="author-avatar">
+                        <span class="author-name">{{ review.user.username }}</span>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No reviews yet.</p>
+                {% endfor %}
+                <!-- ... другие отзывы ... -->
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <img src="{% static 'img/background/image-footer.svg' %}" alt="Hop & Barley Hops Logo" class="footer__hops-logo">
+    <nav class="footer__nav">
+        <ul>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Community</a></li>
+            <li><a href="#">Resources</a></li>
+            <li><a href="#">License</a></li>
+        </ul>
+    </nav>
+    <p class="footer__copyright">© Hop & Barley 2025. All rights reserved</p>
+</footer>
+
+<!-- JS -->
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
