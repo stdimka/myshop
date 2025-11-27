@@ -20,15 +20,15 @@
 <!-- Header -->
 <header>
     <div class="header-container">
-        <a href="{% url 'home' %}" class="header__logo">
+        <a href="/" class="header__logo">
             <img src="{% static 'img/logo.svg' %}" alt="Hop & Barley Logo">
             <p class="logo-text">Hop & Barley</p>
         </a>
         <nav class="header__nav">
             <ul>
-                <li><a href="{% url 'home' %}">Products</a></li>
+                <li><a href="/">Products</a></li>
                 <li><a href="guides-recipes.html">Guides & Recipes</a></li>
-                <li><a href="#">Community</a></li>
+                <li><a href="shop/cart.html">Cart</a></li>
                 <li><a href="#">Resources</a></li>
                 <li><a href="#">Contact</a></li>
             </ul>
@@ -36,16 +36,16 @@
 
         <!-- Block for unauthorized user -->
         <div class="header__auth-buttons" id="auth-guest">
-            <a href="{% url 'auth:login' %}" class="button button--secondary">Sign in</a>
-            <a href="{% url 'auth:register' %}" class="button button--primary">Register</a>
+            <a href="/auth/login/" class="button button--secondary">Sign in</a>
+            <a href="/auth/register/" class="button button--primary">Register</a>
         </div>
 
         <!-- Block for authorized user -->
         <div class="header__user-actions" id="auth-user">
-            <a href="{% url 'user:profile' %}" class="user-icon" aria-label="My Account">
+            <a href="/account/profile/" class="user-icon" aria-label="My Account">
                 <img src="{% static 'img/icons/User_alt.svg' %}" alt="User Account">
             </a>
-            <a href="{% url 'shop:cart' %}" class="cart-icon" aria-label="Shopping Cart">
+            <a href="/shop/cart/" class="cart-icon" aria-label="Shopping Cart">
                 <img src="{% static 'img/icons/Shopping_bag.svg' %}" alt="Shopping Cart">
             </a>
 
@@ -111,7 +111,7 @@
 
             <div class="product-grid">
                 <!-- Card 1: Citra Hops -->
-                <a href="{% url 'shop:product_detail' slug='citra-hops' %}" class="product-card-link">
+                <a href="/shop/product/citra-hops/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/citra_hops.jpg' %}" alt="Citra Hops" class="product-card__image">
                         <div class="product-card__info">
@@ -123,7 +123,7 @@
                 </a>
 
                 <!-- Card 2: Maris Otter Pale Malt -->
-                <a href="{% url 'shop:product_detail' slug='maris-otter-pale-malt' %}" class="product-card-link">
+                <a href="/shop/product/maris-otter-pale-malt/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/maris_otter_malt.jpg' %}" alt="Maris Otter Pale Malt" class="product-card__image">
                         <div class="product-card__info">
@@ -135,7 +135,7 @@
                 </a>
 
                 <!-- Card 3: SafAle US-05 Dry Ale Yeast -->
-                <a href="{% url 'shop:product_detail' slug='safale-us05-dry-ale-yeast' %}" class="product-card-link">
+                <a href="/shop/product/safale-us05-dry-ale-yeast/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/safale_us05_yeast.jpg' %}" alt="SafAle US-05 Dry Ale Yeast" class="product-card__image">
                         <div class="product-card__info">
@@ -147,7 +147,7 @@
                 </a>
 
                 <!-- Card 4: Cascade Hops -->
-                <a href="{% url 'shop:product_detail' slug='cascade-hops' %}" class="product-card-link">
+                <a href="/shop/product/cascade-hops/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/cascade_hops.jpg' %}" alt="Cascade Hops" class="product-card__image">
                         <div class="product-card__info">
@@ -159,7 +159,7 @@
                 </a>
 
                 <!-- Card 5: Caramel Malt 60L -->
-                <a href="{% url 'shop:product_detail' slug='caramel-malt-60l' %}" class="product-card-link">
+                <a href="/shop/product/caramel-malt-60l/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/caramel_malt.jpg' %}" alt="Caramel Malt 60L" class="product-card__image">
                         <div class="product-card__info">
@@ -171,7 +171,7 @@
                 </a>
 
                 <!-- Card 6: Saaz Hops -->
-                <a href="{% url 'shop:product_detail' slug='saaz-hops' %}" class="product-card-link">
+                <a href="/shop/product/saaz-hops/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/saaz_hops.jpg' %}" alt="Saaz Hops" class="product-card__image">
                         <div class="product-card__info">
@@ -183,7 +183,7 @@
                 </a>
 
                 <!-- Card 7: Pilsner Malt -->
-                <a href="{% url 'shop:product_detail' slug='pilsner-malt' %}" class="product-card-link">
+                <a href="/shop/product/pilsner-malt/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/pilsner_malt.jpg' %}" alt="Pilsner Malt" class="product-card__image">
                         <div class="product-card__info">
@@ -195,7 +195,7 @@
                 </a>
 
                 <!-- Card 8: Imperial Organic Yeast A07 -->
-                <a href="{% url 'shop:product_detail' slug='imperial-organic-yeast-a07' %}" class="product-card-link">
+                <a href="/shop/product/imperial-organic-yeast-a07/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/imperial_yeast.jpg' %}" alt="Imperial Organic Yeast A07" class="product-card__image">
                         <div class="product-card__info">
@@ -207,7 +207,7 @@
                 </a>
 
                 <!-- Card 9: Centennial Hops -->
-                <a href="{% url 'shop:product_detail' slug='centennial-hops' %}" class="product-card-link">
+                <a href="/shop/product/centennial-hops/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/centennial_hops.jpg' %}" alt="Centennial Hops" class="product-card__image">
                         <div class="product-card__info">
@@ -219,7 +219,7 @@
                 </a>
 
                 <!-- Card 10: Mosaic Hops-->
-                <a href="{% url 'shop:product_detail' slug='mosaic-hops' %}" class="product-card-link">
+                <a href="/shop/product/mosaic-hops/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/mosaic_hops.jpg' %}" alt="mosaic-hops" class="product-card__image">
                         <div class="product-card__info">
@@ -231,7 +231,7 @@
                 </a>
 
                 <!-- Card 11: West Coast IPA - All-Grain Kit -->
-                <a href="{% url 'shop:product_detail' slug='west-coast-ipa-all-grain-kit' %}" class="product-card-link">
+                <a href="/shop/product/west-coast-ipa-all-grain-kit/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/ipa_kit.jpg' %}" alt="West Coast IPA - All-Grain Kit" class="product-card__image">
                         <div class="product-card__info">
@@ -242,8 +242,8 @@
                     </div>
                 </a>
 
-                <!-- Card 12: Unmalted Whea -->
-                <a href="{% url 'shop:product_detail' slug='unmalted-wheat' %}" class="product-card-link">
+                <!-- Card 12: Unmalted Wheat -->
+                <a href="/shop/product/unmalted-wheat/" class="product-card-link">
                     <div class="product-card">
                         <img src="{% static 'img/products/unmalted_wheat.jpg' %}" alt="Blanche Malt" class="product-card__image">
                         <div class="product-card__info">
