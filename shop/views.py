@@ -3,10 +3,13 @@ from django.views import generic
 from django.views.generic import ListView, DetailView, View
 from django.shortcuts import render, get_object_or_404
 from .models import Product, Category  # ← Убедись, что модель Product существует
+from shop.models import Product
 
 
     # Products
-class HomeView(generic.TemplateView):
+
+class HomeView(generic.ListView):
+    model = Product
     template_name = 'home.html'
 
 class ProductListView(generic.TemplateView):
