@@ -39,32 +39,36 @@
 
 
         {% if request.user.is_authenticated %}
-            <!-- Block for authorized user -->
-            <div class="header__user-actions" id="auth-user">
-                <a href="account.html" class="user-icon" aria-label="My Account" title="Аккаунт">
-                    <img src="{% static 'img/icons/User_alt.svg' %}" alt="User Account">
-                </a>
+    <!-- Block for authorized user -->
+    <div class="header__user-actions" id="auth-user">
+        <!-- ИСПОЛЬЗУЕМ ГЛОБАЛЬНОЕ ИМЯ, например 'account_profile' -->
+        <a href="{% url 'account_profile' %}" class="user-icon" aria-label="My Account" title="Аккаунт">
+            <img src="{% static 'img/icons/User_alt.svg' %}" alt="User Account">
+        </a>
 
-                <a href="{% url 'shop_order' %}" class="cart-icon" aria-label="Shopping Cart" title="Корзина">
-                    <img src="{% static 'img/icons/Shopping_bag.svg' %}" alt="Shopping Cart">
-                </a>
+        <!-- shop_order доступен глобально -->
+        <a href="{% url 'shop_order' %}" class="cart-icon" aria-label="Shopping Cart" title="Корзина">
+            <img src="{% static 'img/icons/Shopping_bag.svg' %}" alt="Shopping Cart">
+        </a>
 
-                <form method="post" action="{% url 'auth_logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-icon" title="Выйти">
-                        <i class="fa-solid fa-right-from-bracket fa-2x"></i>
-                    </button>
-                </form>
-            </div>
+        <!-- auth_logout доступен глобально -->
+        <form method="post" action="{% url 'auth_logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-icon" title="Выйти">
+                <i class="fa-solid fa-right-from-bracket fa-2x"></i>
+            </button>
+        </form>
+    </div>
 
-        {% else %}
-            <!-- Block for unauthorized user -->
-            <div class="header__auth-buttons" id="auth-guest2">
-                <a href="{% url 'auth_login' %}" class="button button--secondary">Sign in</a>
-                <a href="{% url 'auth_registration' %}" class="button button--primary">Register</a>
-            </div>
-
-        {% endif %}
+{% else %}
+    <!-- Block for unauthorized user -->
+    <div class="header__auth-buttons" id="auth-guest2">
+        <!-- auth_login доступен глобально -->
+        <a href="{% url 'auth_login' %}" class="button button--secondary">Sign in</a>
+        <!-- auth_registration доступен глобально -->
+        <a href="{% url 'auth_registration' %}" class="button button--primary">Register</a>
+    </div>
+{% endif %}
 
     </div>
 </header>
