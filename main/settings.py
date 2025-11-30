@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'user',
     'shop',
     'adminapp',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

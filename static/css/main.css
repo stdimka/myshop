@@ -164,6 +164,16 @@ header {
     padding: 0 64px;
 }
 
+.alert-success {
+    background-color: #4BB543; /* насыщенный зелёный */
+    color: white;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-align: center;
+}
+
 /*.hero-banner {*/
 /*    position: relative;*/
 /*    width: 100%;*/
@@ -750,6 +760,10 @@ footer {
     gap: 24px;
 }
 
+.auth-form h2 {
+  text-align: center;
+}
+
 .ButtonGroup--center {
     width: 100%;
     display: flex;
@@ -783,7 +797,8 @@ footer {
 ========================================
 */
 .header__user-actions {
-    display: none;
+/*    display: none; */
+    display: inline-flex;
     align-items: center;
     gap: 24px;
 }
@@ -799,6 +814,21 @@ footer {
     height: 100%;
 }
 
+.logout-icon {
+    background: none;     /* убираем фон */
+    border: none;         /* убираем рамку */
+    padding: 0;           /* убираем внутренние отступы */
+    cursor: pointer;      /* чтобы курсор был pointer */
+    display: inline-flex; /* для выравнивания иконки */
+    align-items: center;
+    justify-content: center;
+}
+
+.logout-icon i {
+    font-size: 38px;      /* размер иконки */
+    color: var(--black-main); /* цвет иконки */
+}
+
 .button--logout {
     background-color: transparent;
     border: 1px solid var(--border-dark-grey);
@@ -811,7 +841,7 @@ footer {
     Logic for Hiding/Showing Auth Blocks
 ========================================
 */
-
+/*
 body:not(.user-logged-in) .header__user-actions {
     display: none;
 }
@@ -825,7 +855,7 @@ body.user-logged-in .header__auth-buttons {
 body.user-logged-in .header__user-actions {
     display: flex;
 }
-
+*/
 
 /*
 ========================================

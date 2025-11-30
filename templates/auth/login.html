@@ -67,24 +67,38 @@
         <h1 class="auth-title">Sign In</h1>
       </div>
 
-      <form class="auth-form" id="login-form">
-        <div class="InputField">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" class="Input" placeholder="Value" required>
-        </div>
-        <div class="InputField">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" class="Input" placeholder="Value" required>
-        </div>
+    <form class="auth-form" id="login-form" method="post" action="{% url 'auth_login' %}">
+        {% csrf_token %}
 
-        <div class="ButtonGroup">
-          <button type="submit" class="button button--primary">Sign In</button>
+        {% if form.non_field_errors %}
+        <div class="error">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
         </div>
+        {% endif %}
 
-        <div class="TextLink">
-          <a href="forgot_password.html">Forgot password?</a>
-        </div>
-      </form>
+        {% for field in form %}
+            <div class="InputField">
+                {{ field.label_tag }}
+                {{ field }}
+
+                {% if field.errors %}
+                  {% for error in field.errors %}
+                    <div class="error">{{ error }}</div>
+                  {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    <div class="ButtonGroup">
+        <button type="submit" class="button button--primary">Sign In</button>
+    </div>
+    </form>
+
+    <div class="TextLink">
+        <a href="{% url 'auth_password_reset' %}">Forgot password?</a>
+    </div>
+
 
       <p class="auth-switch">Don’t have an account? <a href="register.html">Sign up</a></p>
     </div>
