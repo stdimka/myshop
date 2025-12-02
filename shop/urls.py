@@ -5,7 +5,7 @@ from . import views as shop_views
 
 
 urlpatterns = [
-    path("home", shop_views.HomeView.as_view(), name="home"),
+    #path("home", shop_views.HomeView.as_view(), name="home"),
 
     # Products
     path("products/", shop_views.ProductListView.as_view(), name="shop_products"),

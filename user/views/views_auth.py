@@ -10,7 +10,6 @@ from user.models import UserToken
 from user import forms
 from user.utils import send_email_verification
 
-
 class LoginView(auth_views.LoginView):
     template_name = "auth/login.html"
     form_class = forms.LoginForm
@@ -143,6 +142,7 @@ class PasswordResetConfirmView(generic.FormView):
         self.token_obj.revoke()
         messages.success(self.request, "Пароль успешно изменён")
         return super().form_valid(form)
+
 
 
 #my first version
