@@ -7,7 +7,7 @@ SERVER_EMAIL = 'dimkadimko88@gmail.com'      # <- Тоже реальный emai
 DEFAULT_FROM_EMAIL = 'dimkadimko88@gmail.com' # <- От кого будут приходить обычные письма (например, подтверждение регистрации)
 
 # Если у тебя есть SECRET_KEY в settings.py как переменная окружения — тоже можно сюда:
-# SECRET_KEY = 'your_actual_secret_key_here'
+SECRET_KEY = 'django-insecure-@mr9eqs$njns*ewg4emy85416bz=@&b+zh1^qe1y9msyzst-_y'
 
 # Если хочешь использовать другой SITE_URL на проде:
 # SITE_URL = 'https://yourrealwebsite.com'
