@@ -1,0 +1,106 @@
+<!-- templates/admin/stats.html -->
+{% extends 'base.html' %} <!-- Наследуемся от базового шаблона -->
+
+{% block title %}Admin Statistics | Hop & Barley{% endblock %}
+
+{% block content %}
+<h1>Admin Dashboard: Statistics</h1>
+
+<section class="admin-stats-section">
+    <div class="admin-stats-grid">
+        <div class="stat-card stat-card--large">
+            <h3>Total Revenue (Last 30 Days)</h3>
+            <p class="stat-value">${{ revenue_last_30_days|floatformat:2 }}</p>
+            <div class="stat-trend stat-trend--positive">+5.2%</div>
+        </div>
+        <div class="stat-card stat-card--large">
+            <h3>Total Orders (Last 30 Days)</h3>
+            <p class="stat-value">{{ orders_count_last_30_days }}</p>
+            <div class="stat-trend stat-trend--negative">-1.1%</div>
+        </div>
+        <div class="stat-card stat-card--large">
+            <h3>New Users (Last 30 Days)</h3>
+            <p class="stat-value">{{ users_count_last_30_days }}</p>
+            <div class="stat-trend stat-trend--positive">+12.3%</div>
+        </div>
+        <div class="stat-card stat-card--large">
+            <h3>Conversion Rate</h3>
+            <p class="stat-value">{{ conversion_rate|floatformat:2 }}%</p>
+            <div class="stat-trend stat-trend--positive">+0.8%</div>
+        </div>
+    </div>
+
+    <div class="admin-chart-container">
+        <h2>Sales Over Time (Last 30 Days)</h2>
+        <canvas id="salesChart"></canvas>
+    </div>
+
+    <div class="admin-data-table">
+        <h2>Top-Selling Products</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Units Sold</th>
+                    <th>Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in top_products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category.name }}</td>
+                    <td>{{ product.total_sold }}</td>
+                    <td>${{ product.total_revenue|floatformat:2 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No sales data available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Подключаем Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Пример инициализации графика (нужно подключить данные из контекста)
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    const salesData = {{ sales_chart_data|safe }}; // Передаём данные из шаблона
+
+    // Пример данных (замените на реальные из salesData)
+    const labels = salesData.map(item => item.date);
+    const dataValues = salesData.map(item => item.revenue);
+
+    const salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Revenue',
+                data: dataValues,
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

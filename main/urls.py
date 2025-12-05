@@ -8,17 +8,15 @@ from shop.views import HomeView
 
 urlpatterns = [
                   path('administrator/', admin.site.urls),
-                  path('admin/', include('adminapp.urls')),
-                  # Главная страница — каталог товаров
+
+                  path('admin/', include('adminapp.urls')),  # будет: /admin/
+                  path('dashboard/', include('adminapp.urls')),  # будет: /dashboard/
+
                   path('', HomeView.as_view(), name='home'),
-                  # Подключаем URL'ы приложений
-                  path('shop/', include('shop.urls')),  # ← или используй shop.urls для корня
-                  # path('user/', include('user.urls')),  # ← регистрация, профиль и т.д.
+
+                  path('shop/', include('shop.urls')),
                   path('auth/', include('user.urls.urls_auth')),
                   path('account/', include('user.urls.urls_account')),
-
-                  # Если будешь делать API
-                  # path('api/', include('api.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # if settings.DEBUG:

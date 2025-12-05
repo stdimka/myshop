@@ -1,0 +1,147 @@
+<!-- templates/admin/search.html -->
+{% extends 'base.html' %}
+
+{% block title %}Admin Search | Hop & Barley{% endblock %}
+
+{% block content %}
+<h1>Admin Dashboard: Search</h1>
+
+<form method="get" class="admin-search-form">
+    <div class="search-input-wrapper">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search products, orders, users, reviews..." class="search-input">
+        <button type="submit" class="search-button" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </div>
+</form>
+
+{% if query %}
+    <h2>Search Results for "{{ query }}"</h2>
+
+    {% if results.products %}
+        <section class="admin-search-results-section">
+            <h3>Products</h3>
+            <div class="product-grid">
+                {% for product in results.products %}
+                <a href="{% url 'shop:product_detail' slug=product.slug %}" class="product-card-link">
+                    <div class="product-card">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-card__image">
+                        <div class="product-card__info">
+                            <h4 class="product-card__name">{{ product.name }}</h4>
+                            <p class="product-card__price">${{ product.price }}</p>
+                            <p class="product-card__description">{{ product.description|truncatewords:10 }}</p>
+                        </div>
+                    </div>
+                </a>
+                {% empty %}
+                <p>No products found.</p>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if results.orders %}
+        <section class="admin-search-results-section">
+            <h3>Orders</h3>
+            <div class="admin-data-table">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Status</th>
+                            <th>Total Price</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in results.orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.user.username }}</td>
+                            <td>{{ order.get_status_display }}</td>
+                            <td>${{ order.total_price }}</td>
+                            <td>{{ order.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">No orders found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
+
+    {% if results.users %}
+        <section class="admin-search-results-section">
+            <h3>Users</h3>
+            <div class="admin-data-table">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Joined Date</th>
+                            <th>Is Active</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in results.users %}
+                        <tr>
+                            <td>{{ user.user.username }}</td> <!-- или user.username, если это User -->
+                            <td>{{ user.user.email }}</td> <!-- или user.email -->
+                            <td>{{ user.user.date_joined|date:"M d, Y" }}</td> <!-- или user.date_joined -->
+                            <td>{{ user.user.is_active|yesno:"Yes,No" }}</td> <!-- или user.is_active -->
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">No users found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
+
+    {% if results.reviews %}
+        <section class="admin-search-results-section">
+            <h3>Reviews</h3>
+            <div class="reviews-grid">
+                {% for review in results.reviews %}
+                <div class="review-card">
+                    <div class="review-rating">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fa-solid fa-star"></i>
+                            {% else %}
+                                <i class="fa-regular fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="review-body">
+                        <h4 class="review-heading">{{ review.product.name }} - {{ review.user.username }}</h4>
+                        <p class="review-text">{{ review.comment }}</p>
+                    </div>
+                    <div class="review-author">
+                        <span class="review-date">{{ review.created_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No reviews found.</p>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if not results.products and not results.orders and not results.users and not results.reviews %}
+        <p>No results found for "{{ query }}".</p>
+    {% endif %}
+
+{% else %}
+    <p>Please enter a search term.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,78 @@
+<!-- templates/admin/permissions.html -->
+{% extends 'base.html' %}
+
+{% block title %}Admin Permissions | Hop & Barley{% endblock %}
+
+{% block content %}
+<h1>Admin Dashboard: Permissions & Roles</h1>
+
+<section class="admin-permissions-section">
+    <h2>Manage User Groups</h2>
+    <div class="admin-data-table">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>User</th>
+                <th>Current Groups</th>
+                <th>Add/Remove Group</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users_with_perms %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>
+                    {% for group in user.groups.all %}
+                    <span class="badge badge--secondary">{{ group.name }}</span>
+                    {% empty %}
+                    <span class="badge badge--muted">No groups</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    <form method="post" class="admin-permission-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        <select name="group_id" class="Input">
+                            {% for group in all_groups %}
+                            <option value="{{ group.id }}">{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" name="action" value="add" class="button button--secondary">Add</button>
+                        <button type="submit" name="action" value="remove" class="button button--danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Create New Group</h2>
+
+    <form method="post" class="admin-form">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create_group">
+
+        <div class="InputField">
+            <label for="group_name">Group Name</label>
+            <input type="text" id="group_name" name="group_name" class="Input" required>
+        </div>
+
+        <div class="InputField">
+            <label for="permissions_select">Permissions</label>
+            <select multiple id="permissions_select" name="permissions" class="Input">
+                {% for perm in all_permissions %}
+                <option value="{{ perm.id }}">
+                    {{ perm.codename }} ({{ perm.content_type.app_label }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="button button--primary">
+            Create Group
+        </button>
+    </form>
+
+</section>
+{% endblock %}
