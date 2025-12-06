@@ -35,7 +35,7 @@ class TestAuthViews:
         url = reverse("auth_logout")
         response = client.post(url)
         assert response.status_code == 302
-        assert response.url == "/"  # next_page
+        assert response.url == "/shop/"  # next_page
 
 @pytest.mark.django_db
 class TestRegistrationViews:

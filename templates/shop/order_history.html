@@ -1,0 +1,9 @@
+{% for order in orders %}
+  <div class="order-card">
+      <p>Order #{{ order.id }}</p>
+      <p>Total: ${{ order.total_price }}</p>
+      <p>Date: {{ order.created_at }}</p>
+  </div>
+{% empty %}
+  <p>У вас ещё нет заказов.</p>
+{% endfor %}

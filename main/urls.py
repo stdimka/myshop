@@ -10,16 +10,17 @@ urlpatterns = [
                   path('administrator/', admin.site.urls),
 
                   path('admin/', include('adminapp.urls')),  # будет: /admin/
-                  path('dashboard/', include('adminapp.urls')),  # будет: /dashboard/
 
                   path('', HomeView.as_view(), name='home'),
 
                   path('shop/', include('shop.urls')),
                   path('auth/', include('user.urls.urls_auth')),
                   path('account/', include('user.urls.urls_account')),
+
+                  path("contact/", TemplateView.as_view(template_name="contact.html"), name="contact"),
+                  path("faq/", TemplateView.as_view(template_name="faq.html"), name="faq"),
+                  path("community/", TemplateView.as_view(template_name="community.html"), name="community"),
+                  path("license/", TemplateView.as_view(template_name="license.html"), name="license"),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# if settings.DEBUG:
-#    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
-# Если есть MEDIA:
-# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

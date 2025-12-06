@@ -88,3 +88,7 @@ class AdminPermissionsView(TemplateView):
                     messages.info(request, f"Группа '{group.name}' уже существует.")
 
         return redirect("admin_permissions")
+
+class AdminProductsView(TemplateView):
+    template_name = "admin/products.html"
+

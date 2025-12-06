@@ -1,4 +1,5 @@
 from user.views import views_auth, views_account
+from user.views.views_account import AccountView
 
 user_urls = [
     # Аутентификация
@@ -12,6 +13,6 @@ user_urls = [
     #("auth_password_change", views_auth.PasswordChangeView, "???", 200),
 
     # Управление аккаунтом
-    ("account_profile", views_account.ProfileView, "???", 200),
+    ('account_profile', AccountView, {}, 200),
     ("account_orders", views_account.OrderHistoryView, "???", 200),
 ]

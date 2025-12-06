@@ -1,16 +1,15 @@
 # shop/urls_account.py
 from django.urls import path
 from . import views as shop_views
-
-
+from .views import GuidesRecipesView
 
 urlpatterns = [
-    #path("home", shop_views.HomeView.as_view(), name="home"),
+    path("", shop_views.HomeView.as_view(), name="home"),
 
     # Products
     path("products/", shop_views.ProductListView.as_view(), name="shop_products"),
     path("products_search/", shop_views.ProductSearchView.as_view(), name="shop_products_search"),
-    path("product_detail/", shop_views.ProductDetailView.as_view(), name="shop_product_detail"),
+    path("products/<slug:slug>/", shop_views.ProductDetailView.as_view(), name="shop_product_detail"),
     path("product_review_add/", shop_views.ProductReviewAddView.as_view(), name="shop_product_review_add"),
     path("product_reviews/", shop_views.ProductReviewListView.as_view(), name="shop_product_reviews"),
 
@@ -33,14 +32,7 @@ urlpatterns = [
     path("review_update/", shop_views.ReviewUpdateView.as_view(), name="shop_review_update"),
     path("review_delete/", shop_views.ReviewDeleteView.as_view(), name="shop_review_delete"),
 
+    # Guides
+    path("guides/", GuidesRecipesView.as_view(), name="guides_recipes"),
 
-    # Главная страница магазина (например, каталог)
-    #path('', views.ProductListView.as_view(), name='product_list'),
-    # Страница товара
-    #path('product/<slug:slug>/', views.ProductDetailView.as_view(), name='product_detail'),
-    # Корзина
-    #path('cart/', views.CartView.as_view(), name='cart'),
-    # Оформление заказа
-    #path('checkout/', views.CheckoutView.as_view(), name='checkout'),
-    # Другие URL...
 ]
