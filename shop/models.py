@@ -238,6 +238,22 @@ class Review(models.Model):
         return f"{self.user.username}: {self.rating}/5"
 
 
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Cart {self.user}"
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, related_name="items", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def get_total_price(self):
+        return self.quantity * self.product.price
+
+
 # ------------------------------
 # Signals — пересчёт total при изменениях OrderItem
 # ------------------------------

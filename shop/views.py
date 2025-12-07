@@ -2,6 +2,7 @@ from django.views import generic
 from django.views.generic import ListView, DetailView, TemplateView
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.core.paginator import Paginator
 
 from .models import Product, Order, OrderItem, Review
 from django.db.models import Q
@@ -54,16 +55,47 @@ class ProductListView(ListView):
     context_object_name = 'object_list'
 
 
+
 class ProductSearchView(ListView):
     model = Product
     template_name = 'home.html'
-    context_object_name = 'object_list'
+    context_object_name = 'products'
+    paginate_by = 12  # Количество товаров на странице
 
     def get_queryset(self):
+        qs = Product.objects.filter(is_active=True)
         q = self.request.GET.get("q")
+        min_price = self.request.GET.get("min_price")
+        max_price = self.request.GET.get("max_price")
+        sort = self.request.GET.get("sort")
+
         if q:
-            return Product.objects.filter(name__icontains=q)
-        return Product.objects.all()
+            qs = qs.filter(Q(name__icontains=q) | Q(description__icontains=q))
+
+        if min_price:
+            qs = qs.filter(price__gte=min_price)
+        if max_price:
+            qs = qs.filter(price__lte=max_price)
+
+        if sort == "price_asc":
+            qs = qs.order_by("price")
+        elif sort == "price_desc":
+            qs = qs.order_by("-price")
+        elif sort == "new":
+            qs = qs.order_by("-created_at")
+        # по умолчанию — без сортировки
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Сохраняем параметры поиска и фильтры для формы
+        context["query"] = self.request.GET.get("q", "")
+        context["min_price"] = self.request.GET.get("min_price", "")
+        context["max_price"] = self.request.GET.get("max_price", "")
+        context["sort"] = self.request.GET.get("sort", "new")
+        return context
+
 
 
 class ProductDetailView(DetailView):

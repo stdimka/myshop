@@ -61,6 +61,23 @@
                     <p>Ничего не найдено.</p>
                 {% endfor %}
             </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                {% if products.has_previous %}
+                    <a href="?{% if query %}q={{ query }}&{% endif %}{% if min_price %}min_price={{ min_price }}&{% endif %}{% if max_price %}max_price={{ max_price }}&{% endif %}page={{ products.previous_page_number }}" class="pagination__link pagination__link--prev">
+                        <i class="fa-solid fa-arrow-left"></i> Previous
+                    </a>
+                {% endif %}
+
+                <span>Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+
+                {% if products.has_next %}
+                    <a href="?{% if query %}q={{ query }}&{% endif %}{% if min_price %}min_price={{ min_price }}&{% endif %}{% if max_price %}max_price={{ max_price }}&{% endif %}page={{ products.next_page_number }}" class="pagination__link pagination__link--next">
+                        Next <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                {% endif %}
+            </div>
         </section>
     </div>
 </main>
