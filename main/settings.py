@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'adminapp',
     'django_extensions',
     'django_filters',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -65,8 +66,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 if os.getenv("GITHUB_ACTIONS") == "true" or os.getenv("USE_SQLITE_FOR_TESTS", "1") == "1":
     DATABASES = {
@@ -87,8 +86,8 @@ else:
         }
     }
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -105,8 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -142,7 +139,8 @@ SITE_URL = 'http://127.0.0.1:8000'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',  # поддержка session-based
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
@@ -151,8 +149,16 @@ REST_FRAMEWORK = {
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Shop API',
+    'DESCRIPTION': 'Документация API интернет-магазина',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
 
 # Дла загрузки приватных данных из local_settings.py
 try:
@@ -160,11 +166,3 @@ try:
 except ImportError as e:
     print(e)
 
-#from django.core.mail import send_mail
-
-#send_mail(
-    #    subject="Тестовое письмо",
-    #    message="Если ты читаешь это — SMTP работает!",
-    #    from_email=None,  # возьмётся DEFAULT_FROM_EMAIL
-#    recipient_list=["dimkadimko88@gmail.com"],
-#)

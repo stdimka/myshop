@@ -10,12 +10,10 @@ import uuid
 from user.models import UserProfile
 
 
-# безопасное получение профиля пользователя
 def _get_profile(user):
     from user.models import UserProfile
     profile, _ = UserProfile.objects.get_or_create(user=user)
     return profile
-
 
 
 class Category(models.Model):
@@ -81,7 +79,6 @@ class Order(models.Model):
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
-    # допускаем NULL для cart (чтобы несколько корзин не конфликтовали)
     order_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="cart")
     total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
@@ -97,10 +94,6 @@ class Order(models.Model):
             self.order_id = f"{date_part}__{self.user.id}__{uuid.uuid4().hex[:6]}"
 
         super().save(*args, **kwargs)
-
-        # НО: автооплата запускается при переводе в pending (в to_pending)
-        # и при явном пополнении баланса (user.models сигнал).
-        # Здесь автозапуска не ставим, чтобы избежать двойных вызовов.
 
     def add_product(self, product, quantity=1):
         item, created = OrderItem.objects.get_or_create(
@@ -260,7 +253,6 @@ class CartItem(models.Model):
 @receiver(post_save, sender=OrderItem)
 @receiver(post_delete, sender=OrderItem)
 def update_order_total(sender, instance, **kwargs):
-    # гарантируем, что при любом изменении позиции сумма заказа актуальна
     try:
         instance.order.recalculate_total()
     except Exception:
@@ -277,6 +269,7 @@ def ensure_order_paid(sender, instance, created, **kwargs):
         if instance.order.status != "paid":
             instance.order.status = "paid"
             instance.order.save(update_fields=["status"])
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

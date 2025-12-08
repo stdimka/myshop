@@ -6,5 +6,5 @@ urlpatterns = [
     path("stats/", admin_views.AdminStatsView.as_view(), name="admin_stats"),
     path("search/", admin_views.AdminSearchView.as_view(), name="admin_search"),
     path("permissions/", admin_views.AdminPermissionsView.as_view(), name="admin_permissions"),
-    path("products/", admin_views.AdminProductsView.as_view(), name="admin_products"),  # ✅ ВОТ ЭТО ОБЯЗАТЕЛЬНО
+    path("products/", admin_views.AdminProductsView.as_view(), name="admin_products"),
 ]

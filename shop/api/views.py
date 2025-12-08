@@ -1,22 +1,23 @@
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters, status
 from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
-from shop.models import Category, Order, Cart, OrderItem, Product
+from shop.models import Category, Order, Cart, OrderItem, Product, Review
 from .serializers import CategorySerializer, OrderSerializer
-from rest_framework import viewsets, permissions, status
 from django.shortcuts import get_object_or_404
 
-from .serializers import OrderSerializer
-from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from shop.models import Product, Review
 from .serializers import (
     ProductListSerializer,
     ProductDetailSerializer,
     ReviewSerializer,
 )
+from rest_framework import generics
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.contrib.auth import get_user_model
+
+from .serializers import UserRegisterSerializer, UserProfileSerializer
 
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
@@ -69,13 +70,12 @@ class ProductReviewViewSet(viewsets.ModelViewSet):
             product_id=self.kwargs["product_id"]
         )
 
+
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.annotate(
         products_count=Avg("products__id")
     )
     serializer_class = CategorySerializer
-
-
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -148,8 +148,6 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(order)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
 
 
 class CartViewSet(viewsets.ViewSet):
@@ -225,3 +223,32 @@ class CartViewSet(viewsets.ViewSet):
             self._save_cart(cart)
             return Response({"message": "Product removed"})
         return Response({"error": "Product not in cart"}, status=status.HTTP_404_NOT_FOUND)
+
+
+User = get_user_model()
+
+
+class UserRegisterAPIView(generics.CreateAPIView):
+    """
+    POST /api/users/register/
+    {
+        "username": "test",
+        "email": "test@mail.com",
+        "password": "123456"
+    }
+    """
+    queryset = User.objects.all()
+    serializer_class = UserRegisterSerializer
+    permission_classes = [AllowAny]
+
+
+class UserProfileAPIView(generics.RetrieveUpdateAPIView):
+    """
+    GET  /api/users/me/
+    PATCH /api/users/me/
+    """
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user

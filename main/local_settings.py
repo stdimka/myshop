@@ -11,3 +11,7 @@ SECRET_KEY = 'django-insecure-@mr9eqs$njns*ewg4emy85416bz=@&b+zh1^qe1y9msyzst-_y
 
 # Если хочешь использовать другой SITE_URL на проде:
 # SITE_URL = 'https://yourrealwebsite.com'
+
+#$token.access eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1MTQzNzYwLCJpYXQiOjE3NjUxNDM0NjAsImp0aSI6IjU3YTgxNjRmZTRmNDQ2YWQ5OWUxMDM5MzM5ZDhkMWYwIiwidXNlcl9pZCI6IjM3In0.Vbd1WW2fNHzw-4jukSi3ApJQ4k_Ptb-cb6VzUBUL2a4
+#$token.refresh eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2NTIyOTg2MCwiaWF0IjoxNzY1MTQzNDYwLCJqdGkiOiI3YjEzNTkzZWMzN2E0OTk1ODc0M2I0YjUxY2I2OGQ5NiIsInVzZXJfaWQiOiIzNyJ9.Dj4PhqkQMg63fAKjTqIeGzQYbShxv8vKSnakdl4cStw
+
