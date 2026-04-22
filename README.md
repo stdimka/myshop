@@ -1,68 +1,67 @@
-# 🛒 MyShop — интернет-магазин (Django + DRF + JWT + Docker)
+# 🛒 MyShop — online store (Django + DRF + JWT + Docker)
 
-Полнофункциональный бэкенд интернет-магазина с авторизацией через JWT, корзиной, заказами, фильтрацией, документацией Swagger и полноценным API-слоем.
-
+A fully functional backend for an online store with JWT authentication, shopping cart, orders, filtering, Swagger documentation, and a complete API layer.
 ---
 
-## 📌 Описание
+## 📌 Description
 
-Проект реализован на базе:
+The project is built on the basis of:
 
 - **Django 5**
 - **Django REST Framework**
-- **SimpleJWT** (access/refresh токены)
+- **SimpleJWT** (access/refresh tokens)
 - **drf-spectacular** (Swagger / OpenAPI)
 - **SQLite / PostgreSQL**
 - **Docker + Docker Compose**
 - **pytest + pytest-django + coverage**
 
-Включает в себя:
+Includes:
 
-- регистрацию и авторизацию через JWT
-- управление корзиной
-- оформление заказов
-- CRUD товаров и отзывов
-- админ-панель
-- API-документацию Swagger (`/swagger/`)
-- автогенерацию схемы OpenAPI (`/api/schema/`)
+-user registration and authentication via JWT
+-shopping cart management
+-order processing
+-CRUD operations for products and reviews
+-admin panel
+-Swagger API documentation (/swagger/)
+-automatic OpenAPI schema generation (/api/schema/)
 
 ---
 
-## 🚀 Установка и запуск через Docker
+## 🚀 Installation and setup using Docker
 
-Убедись, что у тебя установлены:
+Make sure you have installed:
 
 - Docker
 - Docker Compose
 
-### 1️⃣ Клонировать проект
+### 1️⃣ Clone the project
 
 ```bash
 git clone https://github.com/stdimka/myshop.git
 cd myshop
 
-2️⃣ Собрать контейнеры
+2️⃣ Build the containers
 docker-compose build
 
-3️⃣ Запустить
+3️⃣ Start the containers
 docker-compose up -d
 
-4️⃣ Применить миграции (внутри контейнера)
+4️⃣ Apply migrations (inside the container)
 docker-compose exec web python manage.py migrate
 
-5️⃣ Создать суперпользователя (опционально)
+5️⃣ Create a superuser (optional)
 docker-compose exec web python manage.py createsuperuser
 
 
-После запуска API доступно по адресу:
+After startup, the API is available at:
 http://127.0.0.1:8000/
 
 
-🔐 JWT авторизация + API примеры
+🔐 JWT authentication + API examples
 
-DRF SimpleJWT предоставляет два ключевых эндпоинта:
+DRF SimpleJWT provides two main endpoints:
 
-▶ Получение токенов
+▶ Obtain tokens
 POST /api/token/
 
 Body:
@@ -71,13 +70,13 @@ Body:
   "password": "123"
 }
 
-Ответ:
+Response:
 {
   "access": "eyJhbGciOi...",
   "refresh": "eyJhbGciOi..."
 }
 
-▶ Обновление токена
+▶ Token refresh
 POST /api/token/refresh/
 
 Body:
@@ -86,12 +85,12 @@ Body:
 }
 
 
-▶ Использование access-токена в запросах
+▶ Using the access token in requests
 curl -X GET http://127.0.0.1:8000/api/products/ \
   -H "Authorization: Bearer <ACCESS_TOKEN>"
 
 
-📘 Документация API
+📘 API documentation
 
 Swagger UI:
 http://127.0.0.1:8000/swagger/
@@ -99,18 +98,18 @@ http://127.0.0.1:8000/swagger/
 Redoc:
 http://127.0.0.1:8000/api/redoc/
 
-JSON-схема OpenAPI:
+OpenAPI JSON schema:
 http://127.0.0.1:8000/api/schema/
 
 
-🧪 Запуск тестов и линтеров
-▶ Запуск pytest
+🧪 Running tests and linters
+▶ Run pytest
 pytest -v
 
-С покрытием:
+With coverage:
 pytest --cov=.
 
-▶ Линтер flake8
+▶ Run flake8 linter
 flake8 .
 
 
@@ -413,32 +412,13 @@ myshop/
 └── requirements.txt
 
 
-✅ Статус проекта
+✅ Project status
 
-Ветка: finish
-Проект полностью работает и готов к размещению / сдаче.
+Branch: finish
+The project is fully functional and ready for deployment.
 
-Чек-лист перед сдачей
+📧 Contacts
 
-- [v] Проект запускается через Docker Compose на чистой копии.
-- [v] PostgreSQL используется.
-- [v] Каталог: фильтры, поиск, пагинация.
-- [v] Страница товара: детали, отзывы, добавление в корзину.
-- [v] Корзина: управление, расчёт, проверка остатков.
-- [v] Оформление заказа: создание, email, валидация.
-- [v] Личный кабинет: регистрация, вход, история, редактирование.
-- [v] REST API: JWT, документация, права.
-- [v] Админка: аналитика, фильтры, управление.
-- [v] Swagger/OpenAPI работает.
-- [v] Типизация и докстринги.
-- [v] Линтеры (flake8/mypy) без критичных ошибок.
-- [v] Базовые тесты проходят.
-- [v] README полон и понятен.
-- [v] Коммиты осмысленные, ветки используются.
-- [v] Чек-лист приложен.
-
-
-📧 Контакты
-
-Автор: dmitry stepenco
+Author: dmitry stepenco
+dmitriistepenco@gmail.com
 GitHub: https://github.com/stdimka
